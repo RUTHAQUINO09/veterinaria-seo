@@ -4,18 +4,17 @@ export default function handler(req, res) {
   const pages = ["", "servicios", "contacto"];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    ${pages
-      .map((page) => {
-        return `
-        <url>
-          <loc>${baseUrl}/${page}</loc>
-        </url>`;
-      })
-      .join("")}
-  </urlset>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages
+  .map((page) => {
+    const url = page === "" ? baseUrl : `${baseUrl}/${page}`;
+    return `<url><loc>${url}</loc><lastmod>${new Date()
+      .toISOString()
+      .split("T")[0]}</lastmod></url>`;
+  })
+  .join("")}
+</urlset>`;
 
   res.setHeader("Content-Type", "text/xml");
-  res.write(sitemap);
-  res.end();
+  res.status(200).send(sitemap);
 }
